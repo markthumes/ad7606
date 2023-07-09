@@ -3,6 +3,8 @@
 module top_tb();
 	reg clk = 0;
 	reg pwr = 0;
+	
+	wire ADC_STBY;
 
 	initial begin
 		#100
@@ -11,15 +13,16 @@ module top_tb();
 
 	ad7606 adc(
 		.clk(clk),
-		.power(pwr) );
+		.power(pwr),
+		.stby(ADC_STBY) );
 
 	//sim time: 10000 * 1 ns = 10 us;
-	localparam DURATION = 10000; //total sim time
+	localparam DURATION = 40000; //total sim time
 	////////////////////////////////////////////////////////////////
 	//                       GENERATE CLOCK                       //
 	//      1 / (( 2 * 41.67) * 1 ns) = 11,999,040.08 MHz         //
 	always begin
-		#10
+		#16.67
 		clk = ~clk;
 	end
 
