@@ -123,11 +123,9 @@ module ad7606#(
 
 	//_________________________________________________________//
 	//   Sync busy to the FPGA using a 3 bit shift register    //
-	reg [2:0] BUSYr;
-	always @(posedge clk) BUSYr <= {BUSYr[1:0], busy};
-	//Now we can detect falling edges for busy bit
-	wire BUSY_falling = (BUSYr[2:1]==2'b10);
-	wire BUSY_rising  = (BUSYr[2:1]==2'b01);
+	wire busy_falling;
+	wire busy_rising;
+	sync busysync(clk, busy, busy_rising, busy_falling);
 	//---------------------------------------------------------//
 
 	//_________________________________________________________//
@@ -142,7 +140,7 @@ module ad7606#(
 		if( state == STATE_RESET ) begin
 			if( conv_ready ) state <= STATE_CONV;
 		end
-		if( BUSY_falling ) state <= STATE_READ;
+		if( busy_falling ) state <= STATE_READ;
 		if( cycle_ctr >= 4 ) state <= STATE_CONV;
 	end
 	//---------------------------------------------------------//
